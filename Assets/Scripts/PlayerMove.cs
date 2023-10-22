@@ -2,62 +2,63 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))] // component 자동으로 추가 
+[RequireComponent(typeof(CharacterController))]
 public class PlayerMove : MonoBehaviour
 {
-    Vector3 destPos;
-    Vector3 dir;
-    Quaternion lookTarget;
-
-    bool move = false;
+    public float moveSpeed = 5.0f;
+    public float jumpForce = 10.0f;
+    public float gravity = 9.81f;
+    public float turnSmoothTime = 0.1f;
+    private float turnSmoothVelocity;
+    private Vector3 moveDirection;
+    private CharacterController controller;
+    private Animator anim;
 
     private void Start()
     {
-
+        controller = GetComponent<CharacterController>();
+        anim = GetComponent<Animator>();
     }
 
     private void Update()
     {
-        
-        if (Input.GetMouseButtonDown(1))
-        {
-            RaycastHit hit;
-            // 메인 카메라를 통해 마우스 클릭한 곳의 ray 정보를 가져옴
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            // ray와 닿은 물체가 있는지 검사
-            if (Physics.Raycast(ray, out hit, 100f))
-            {
-                print(hit.transform.name);
-
-                // hit.point 는 마우스 클릭한 곳의 월드 좌표.
-                // 이 예제에서 캐릭터의 y 값(높이) 은 변하지 않기 때문에 
-                // 아래와 같이 목표위치를 재설정합니다.
-                destPos = new Vector3(hit.point.x, transform.position.y, hit.point.z);
-
-                // 현재 위치와 목표 위치의 방향 벡터
-                dir = destPos - transform.position;
-
-                // 바라 보아야 할 곳의 Quaternion
-                lookTarget = Quaternion.LookRotation(dir);
-                move = true;
-            }
-        }
-
-        Move();
+        MovePlayer();
     }
 
-    void Move()
+    private void MovePlayer()
     {
-        if (move)
-        {
-            // 이동할 방향으로 Time.deltaTime * 2f 의 속도로 움직임.
-            transform.position += dir.normalized * Time.deltaTime * 2f;
-            // 현재 방향에서 움직여야할 방향으로 부드럽게 회전
-            transform.rotation = Quaternion.Lerp(transform.rotation, lookTarget, 0.25f);
+        float moveX = Input.GetAxis("Horizontal");
+        float moveZ = Input.GetAxis("Vertical");
 
-            // 캐릭터의 위치와 목표 위치의 거리가 0.05f 보다 큰 동안만 이동
-            move = (transform.position - destPos).magnitude > 0.05f;
+        Vector3 direction = new Vector3(moveX, 0f, moveZ).normalized;
+
+        if (direction.magnitude >= 0.1f)
+        {
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + Camera.main.transform.eulerAngles.y;
+            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+
+            // 플레이어 회전 로직 추가
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+            anim.SetBool("isMove", true);
+            controller.Move(moveDir.normalized * moveSpeed * Time.deltaTime);
         }
+        else
+        {
+            anim.SetBool("isMove", false);
+        }
+
+        // 점프 로직
+        if (controller.isGrounded && Input.GetButtonDown("Jump"))
+        {
+            moveDirection.y = jumpForce;
+            anim.SetTrigger("Jump");
+        }
+
+        // 중력 적용
+        moveDirection.y -= gravity * Time.deltaTime;
+
+        controller.Move(moveDirection * Time.deltaTime);
     }
 }
