@@ -4,14 +4,22 @@ using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
-    void OnTriggerExit(Collider other)
+    void Update() 
     {
-        GameManager.Instance.OffChatScreen();
+        // 게임이 일시정지 상태일 때만 ESC 키를 감지합니다.
+        if (GameManager.Instance.IsPaused && Input.GetKeyDown(KeyCode.Escape))
+        {
+            GameManager.Instance.GameContinue();
+            GameManager.Instance.OffChatScreen();
+        }
     }
 
-    void OnTriggerStay(Collider other){
+    void OnTriggerStay(Collider other)
+    {
         if(Input.GetKeyDown(KeyCode.C))
+        {
             GameManager.Instance.OnChatScreen();
+            GameManager.Instance.GamePause();
+        }
     }
-
 }
