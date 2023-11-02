@@ -17,7 +17,14 @@ namespace OpenAI
         private OpenAIApi openai = new OpenAIApi();
 
         private List<ChatMessage> messages = new List<ChatMessage>();
-        private string prompt = "Act as a fantazy character  + 30단어 이하로 말해";
+
+        public string saveMsg = "";
+        public string characterConcept =  "Act as a fantazy character"
+                                        + "King of this fantazy world"
+                                        + "Please saving this world";
+        private string prompt = "30단어 이하로 답변한다.";
+
+        
 
         private void Start()
         {
@@ -47,7 +54,7 @@ namespace OpenAI
             
             AppendMessage(newMessage);
 
-            if (messages.Count == 0) newMessage.Content = prompt + "\n" + inputField.text; 
+            if (messages.Count == 0) newMessage.Content = saveMsg + characterConcept + prompt + "\n" + inputField.text; 
             
             messages.Add(newMessage);
             
