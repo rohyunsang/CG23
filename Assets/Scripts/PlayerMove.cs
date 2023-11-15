@@ -14,8 +14,9 @@ public class PlayerMove : MonoBehaviour
     private Vector3 moveDirection;
     private CharacterController controller;
     private Animator anim;
+    public LayerMask _fieldLayer;  // 필드 레이어 설정
 
-    Weapon weapon;
+    //Weapon weapon;
 
 
 
@@ -57,7 +58,7 @@ public class PlayerMove : MonoBehaviour
             anim.SetBool("isMove", false);
         }
 
-        if (controller.isGrounded && Input.GetButtonDown("Jump"))
+        if (IsGroundedUsingRay() && Input.GetButtonDown("Jump"))
         {
             moveDirection.y = jumpForce;
             anim.SetTrigger("Jump");
@@ -66,6 +67,23 @@ public class PlayerMove : MonoBehaviour
         moveDirection.y -= gravity * Time.deltaTime;
 
         controller.Move(moveDirection * Time.deltaTime);
+    }
+    private bool IsGroundedUsingRay()
+    {
+        // CharacterController.IsGrounded가 true라면 Raycast를 사용하지 않고 판정 종료
+        if (controller.isGrounded) return true;
+
+        // 발사하는 광선의 초기 위치와 방향
+        var ray = new Ray(this.transform.position + Vector3.up * 0.1f, Vector3.down);
+
+        // 탐색 거리
+        var maxDistance = 1.5f;
+
+        // 광선 디버그 용도
+        Debug.DrawRay(transform.position + Vector3.up * 0.1f, Vector3.down * maxDistance, Color.red);
+
+        // Raycast의 hit 여부로 판정
+        return Physics.Raycast(ray, maxDistance, _fieldLayer);
     }
 
     void Attack()
@@ -86,4 +104,6 @@ public class PlayerMove : MonoBehaviour
         }
 
     }
+
+
 }
