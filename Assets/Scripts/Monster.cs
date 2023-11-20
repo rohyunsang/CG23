@@ -42,12 +42,23 @@ public class Monster : MonoBehaviour
     private void Start()
     {
         currentHealth = maxHealth;
-        playerTransform = GameObject.Find("Player").GetComponent<Transform>();
+        playerTransform = GameObject.FindWithTag("Player").transform;
         anim = GetComponent<Animator>();
     }
 
     private void Update()
     {
+        navAgent.SetDestination(playerTransform.position);
+        
+        if (navAgent.velocity.magnitude > 0.1f) // 이동 중일 때
+        {
+            anim.SetBool("isMove", true);
+        }
+        else
+        {
+            anim.SetBool("isMove", false);
+        }
+        
         if (playerTransform && !isAttacking)
         {
             float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
@@ -56,6 +67,10 @@ public class Monster : MonoBehaviour
                 Attack();
             }
         }
+        
+        
+
+        
     }
 
     private void Attack()
