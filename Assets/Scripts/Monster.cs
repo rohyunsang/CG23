@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public enum MonsterStatus
 {
@@ -12,13 +13,11 @@ public enum MonsterStatus
 
 public class Monster : MonoBehaviour
 {
-    public Transform playerTransform; // 플레이어의 위치 정보 참조
-
-    public Vector3 destPoint = new Vector3(13.23f, 1.414f, -6.46f);  // tree position
-
+    public Transform playerTransform;   // 플레이어의 위치 정보 참조
+    public Transform target;            // 목표 위치
+    
     public int maxHealth = 100;
     private int currentHealth;
-
     public float moveSpeed = 3.0f;
     private float attackRange = 5.0f;  // 이 범위안에 들어오면 공격
     [SerializeField] float attackCooldown = 1.5f;
@@ -29,6 +28,16 @@ public class Monster : MonoBehaviour
     private bool isAttacking = false;
 
     private Animator anim;
+
+    public NavMeshAgent navAgent;   
+
+    
+    void Awake()  // Plz use Awake() instead of Start()
+    {
+        navAgent = GetComponent<NavMeshAgent>();
+        anim = GetComponent<Animator>();
+    }
+
 
     private void Start()
     {

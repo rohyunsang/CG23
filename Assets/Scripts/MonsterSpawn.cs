@@ -4,6 +4,25 @@ using UnityEngine;
 
 public class MonsterSpawn : MonoBehaviour
 {
+    public int currentStage = 0;
+    public 
+    void CheckLevel(){
+
+    }
+    void CheckStatus(int currentStage){
+
+    }
+    void SetMonsterStatus(){
+
+    }
+
+    public void SpawnMonster(){
+        CheckLevel();
+        CheckStatus(-1);
+        SetMonsterStatus();
+    }
+
+    /*
     public GameObject[] monsterPrefabStageOne; // as prefab
 
     public void MonsterSpawnStageOne(){
@@ -34,4 +53,6 @@ public class MonsterSpawn : MonoBehaviour
         float y = 5f;
         return new Vector3(x, y, z);
     }
+    */
+    
 }
