@@ -8,29 +8,29 @@ public enum MonsterStatus
     Idle,
     Walk,
     Attack,
+    Hit,
     Die
 }
 
 public class Monster : MonoBehaviour
 {
+    public PlayerBehavior playerBehavior;
     public Transform playerTransform;   // 플레이어의 위치 정보 참조
     public Transform target;            // 목표 위치
     
-    public int maxHealth = 100;
-    private int currentHealth;
+    public int maxHp = 100;
+    private int currentHp;
     public float moveSpeed = 3.0f;
     private float attackRange = 5.0f;  // 이 범위안에 들어오면 공격
     [SerializeField] float attackCooldown = 1.5f;
     private float lastAttackTime = 0f;
-    public int damage = 10;
+    public int attackDamage = 10;
 
     private MonsterStatus currentState = MonsterStatus.Idle;
     private bool isAttacking = false;
 
     private Animator anim;
-
     public NavMeshAgent navAgent;   
-
     
     void Awake()  // Plz use Awake() instead of Start()
     {
@@ -41,14 +41,15 @@ public class Monster : MonoBehaviour
 
     private void Start()
     {
-        currentHealth = maxHealth;
+        currentHp = maxHp;
         playerTransform = GameObject.FindWithTag("Player").transform;
         anim = GetComponent<Animator>();
     }
 
     private void Update()
     {
-        navAgent.SetDestination(playerTransform.position);
+        // off cuz debugging
+        //navAgent.SetDestination(playerTransform.position);  
         
         if (navAgent.velocity.magnitude > 0.1f) // 이동 중일 때
         {
@@ -59,7 +60,7 @@ public class Monster : MonoBehaviour
             anim.SetBool("isMove", false);
         }
         
-        if (playerTransform && !isAttacking)
+        if (playerTransform && !isAttacking && currentState != MonsterStatus.Die && currentState != MonsterStatus.Hit)
         {
             float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
             if (distanceToPlayer <= attackRange && Time.time >= lastAttackTime + attackCooldown)
@@ -67,10 +68,6 @@ public class Monster : MonoBehaviour
                 Attack();
             }
         }
-        
-        
-
-        
     }
 
     private void Attack()
@@ -100,4 +97,27 @@ public class Monster : MonoBehaviour
         yield return new WaitForSeconds(attackCooldown);
         isAttacking = false;
     }
+
+    private void OnTriggerEnter(Collider col){
+        if(currentState == MonsterStatus.Die)   return;
+        if(col.CompareTag("Weapon")){
+            currentHp -= playerBehavior.attackDamage;
+            Debug.Log(currentHp);
+            currentState = MonsterStatus.Hit;
+            if(currentHp <= 0 && currentState != MonsterStatus.Die){// prevent times Die
+                MonsterDie(); 
+                return;
+            
+            }  
+            anim.SetTrigger("GetHit");
+        }
+    }
+
+    private void MonsterDie(){
+        anim.SetTrigger("Die");
+        currentState = MonsterStatus.Die;
+        navAgent.enabled = false;
+        Destroy(gameObject,4f);
+    }
+
 }
