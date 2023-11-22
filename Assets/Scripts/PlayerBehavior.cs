@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerBehavior : MonoBehaviour
@@ -16,14 +17,25 @@ public class PlayerBehavior : MonoBehaviour
     private Animator anim;
     public LayerMask _fieldLayer;  // 필드 레이어 설정
 
-    //Weapon weapon;
+    public BoxCollider weapon;
+    public int attackDamage = 5;
+    private float attackDelay = 0.5f;
+    private float lastAttackTime = -1f;
+    public Slider slider;
+    public float hpFillAmount;   // slider property value
+
+    public int maxHp = 100;
+    public int currentHp;
 
 
 
     private void Start()
     {
+        weapon.enabled = false;
         controller = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
+        hpFillAmount = slider.value;
+        currentHp = maxHp;
     }
 
     private void Update()
@@ -88,22 +100,48 @@ public class PlayerBehavior : MonoBehaviour
 
     void Attack()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && (lastAttackTime < 0 || Time.time >= lastAttackTime + attackDelay))
         {
-            int randomSwing = Random.Range(0, 2); // 0 또는 1을 반환합니다.
+            lastAttackTime = Time.time; // Resetting the cooldown timer
+
+            weapon.enabled = true;
+            int randomSwing = Random.Range(0, 2); // 0 or 1
 
             if (randomSwing == 0)
             {
-                anim.SetTrigger("Swing_0");
+                anim.SetTrigger("Sting");
             }
             else
             {
-                anim.SetTrigger("Swing_1");
+                anim.SetTrigger("Circle_Slash");
             }
-
+            StartCoroutine(DisableWeaponAfterAnimation(attackDelay));
         }
-
     }
 
+    private IEnumerator DisableWeaponAfterAnimation(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        weapon.enabled = false;
+    }
+
+    private void OnTriggerEnter(Collider col){
+        
+        if(col.CompareTag("MonsterWeapon")){
+            currentHp -= col.GetComponent<MonsterWeapon>().attackDamage;
+            Debug.Log("player hp " + currentHp);
+
+            
+
+            hpFillAmount = (float)currentHp / (float)maxHp;     // HP Bar
+            slider.value = hpFillAmount;
+
+            if(currentHp<=0)    PlayerDie();
+        }
+    }    
+
+    private void PlayerDie(){
+        anim.SetTrigger("Die");
+    }
 
 }
