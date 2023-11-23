@@ -41,15 +41,15 @@ public class Monster : MonoBehaviour
 
     private void Start()
     {
+        anim = GetComponent<Animator>();
         currentHp = maxHp;
         playerTransform = GameObject.FindWithTag("Player").transform;
-        anim = GetComponent<Animator>();
+        playerBehavior = GameObject.FindWithTag("Player").GetComponent<PlayerBehavior>();  // prefab disconnected inspector scripts
     }
 
     private void Update()
     {
-        // off cuz debugging
-        //navAgent.SetDestination(playerTransform.position);  
+        navAgent.SetDestination(playerTransform.position);  
         
         if (navAgent.velocity.magnitude > 0.1f) // 이동 중일 때
         {

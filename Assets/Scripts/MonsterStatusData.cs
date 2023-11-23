@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//Flow : 스폰을 하는데 StatusData에 접근해서 데이터를 가져온 후 스폰.
-//     : 
 
-public class MonsterStatusData : MonoBehaviour  //MonsterStatus
+public class MonsterStatusData : MonoBehaviour  // Not use maybe delete
 {
-    #region OrcPAMaskTint
+    #region OrcPAMaskTint  
+    // 여기에 Prefab도 있어야 편하나 ? 
     public int HP_OrcPAMaskTint = 100;
     public int damage_OrcPAMaskTint = 10;
 
