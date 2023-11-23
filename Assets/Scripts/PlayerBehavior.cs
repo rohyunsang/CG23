@@ -131,7 +131,7 @@ public class PlayerBehavior : MonoBehaviour
             currentHp -= col.GetComponent<MonsterWeapon>().attackDamage;
             Debug.Log("player hp " + currentHp);
 
-            
+            anim.SetTrigger("Hit");
 
             hpFillAmount = (float)currentHp / (float)maxHp;     // HP Bar
             slider.value = hpFillAmount;
