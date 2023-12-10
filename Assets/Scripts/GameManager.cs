@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject); // 이미 GameManager 인스턴스가 있다면, 현재 인스턴스를 파괴
         }
+
+        Cursor.lockState = CursorLockMode.Confined;  // 마우스 이탈 방지
     }
 
     public void OnChatScreen(){
