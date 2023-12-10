@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
         IsPaused = false; // 게임이 일시정지 상태가 아님을 표시
     }
 
-    void Start()
+    public void OnUIScreen()
     {
         UIScreen.SetActive(true);
     }

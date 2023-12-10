@@ -19,10 +19,9 @@ namespace OpenAI
         private List<ChatMessage> messages = new List<ChatMessage>();
 
         public string saveMsg = "";
-        public string characterConcept =  "Act as a fantazy character"
-                                        + "King of this fantazy world"
-                                        + "Please saving this world";
-        private string prompt = "30단어 이하로 답변한다.";
+        public string characterConcept = "";
+        private string prompt = "30단어 이하로 답변한다." 
+                                + "한국어로 답변";
 
         
 
