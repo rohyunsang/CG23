@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 public class StageData : MonoBehaviour {
-    public int stageLevel = 1;
+    public int stageLevel = 0;
     public GameObject orcPrefab;  
     public GameObject skeletonPrefab;
 

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Treasure : MonoBehaviour
 {
-    public int maxHp = 100;
+    public int maxHp = 1000;
     public int currentHp;
     public Slider slider;
     public float hpFillAmount;   // slider property value
@@ -21,7 +21,7 @@ public class Treasure : MonoBehaviour
         if (col.CompareTag("MonsterWeapon"))
         {
             currentHp -= col.GetComponent<MonsterWeapon>().attackDamage;
-            Debug.Log("player hp " + currentHp);
+            Debug.Log("treasure hp " + currentHp);
 
             hpFillAmount = (float)currentHp / (float)maxHp;     // HP Bar
             slider.value = hpFillAmount;

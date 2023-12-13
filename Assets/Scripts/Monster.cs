@@ -33,8 +33,9 @@ public class Monster : MonoBehaviour
     public NavMeshAgent navAgent;
     public Transform treasureTransform;
 
-    private bool playerInRange = false;
+    private bool targetInRange = false;
     private float treasureGuardRange = 30.0f; // Treasure로 돌아갈 범위
+    private float treasureAttackRange = 5.0f; // Treasure 공격 범위
 
     void Awake()  // Plz use Awake() instead of Start()
     {
@@ -58,19 +59,26 @@ public class Monster : MonoBehaviour
         float distanceToTreasure = Vector3.Distance(transform.position, treasureTransform.position);
 
         // 플레이어가 공격 범위 안에 있는지 확인
-        if (distanceToPlayer <= attackRange)
+        if (distanceToPlayer <= attackRange || distanceToTreasure <= treasureAttackRange)
         {
-            playerInRange = true;
+            targetInRange = true;
         }
         else if (distanceToPlayer > treasureGuardRange || distanceToTreasure < attackRange)
         {
-            playerInRange = false;
+            targetInRange = false;
         }
 
-        // 플레이어의 근접성에 따라 목표 결정
-        if (playerInRange && currentState != MonsterStatus.Die && currentState != MonsterStatus.Hit)
+        // 플레이어 또는 Treasure의 근접성에 따라 목표 결정
+        if (targetInRange && currentState != MonsterStatus.Die && currentState != MonsterStatus.Hit)
         {
-            target = playerTransform;
+            if (distanceToPlayer <= attackRange)
+            {
+                target = playerTransform;
+            }
+            else if (distanceToTreasure <= treasureAttackRange)
+            {
+                target = treasureTransform;
+            }
         }
         else
         {
@@ -91,7 +99,7 @@ public class Monster : MonoBehaviour
         }
 
         // 공격 로직
-        if (playerInRange && Time.time >= lastAttackTime + attackCooldown)
+        if (targetInRange && Time.time >= lastAttackTime + attackCooldown)
         {
             Attack();
         }

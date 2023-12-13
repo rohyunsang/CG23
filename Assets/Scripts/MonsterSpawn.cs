@@ -22,8 +22,8 @@ public class MonsterSpawn : MonoBehaviour
     public StageData stageData; // Assign this in the Unity Editor or find it dynamically
     public TextMeshProUGUI currentStageTMP;
     public void StartStage() {  //using btn only debug
-        SpawnMonstersForStage(stageData.stageLevel);
         stageData.stageLevel++;
+        SpawnMonstersForStage(stageData.stageLevel);
         currentStageTMP.text = stageData.stageLevel.ToString();
     }
 
