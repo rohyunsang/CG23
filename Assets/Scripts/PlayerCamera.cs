@@ -25,7 +25,7 @@ public class PlayerCamera : MonoBehaviour
 
     void LateUpdate()
     {
-        if(GameManager.Instance.IsPaused)  // Dont Move Camera
+        if(GameManager.Instance.isPaused)  // Dont Move Camera
             return;
 
         if (!target)

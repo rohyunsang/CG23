@@ -17,15 +17,21 @@ public class StageData : MonoBehaviour {
     }
 
     private void SetupStages() {
-        // Randomly select the number of spawn points (between 1 and 3)
-        int numberOfSpawnPoints = Random.Range(1, 4); // Random.Range is inclusive for min, exclusive for max
+        #region Stage 1
+        int numberOfSpawnPoints = Random.Range(0, 3); 
+        stage1Monsters.Add(new MonsterSpawnInfo(orcPrefab, 10, spawnPoints[numberOfSpawnPoints]));
+        #endregion
 
-        // Example setup for each stage
-        for (int i = 0; i < numberOfSpawnPoints; i++) {
-            int spawnIndex = Random.Range(0, spawnPoints.Length); // Select a random spawn point index
-            stage1Monsters.Add(new MonsterSpawnInfo(orcPrefab, 10, spawnPoints[spawnIndex])); // 10 orcs at a random gate
-        }
-        // Repeat the process for other stages with different monster setups if needed
+        #region Stage 2
+        numberOfSpawnPoints = Random.Range(0, 3);
+        stage2Monsters.Add(new MonsterSpawnInfo(skeletonPrefab, 10, spawnPoints[numberOfSpawnPoints]));
+        #endregion
+
+        #region Stage 3
+        numberOfSpawnPoints = Random.Range(0, 3);
+        stage3Monsters.Add(new MonsterSpawnInfo(orcPrefab, 10, spawnPoints[numberOfSpawnPoints]));
+        stage3Monsters.Add(new MonsterSpawnInfo(skeletonPrefab, 10, spawnPoints[numberOfSpawnPoints]));
+        #endregion
     }
 
     public List<MonsterSpawnInfo> GetMonsterSpawnInfoForStage(int stageNumber) {

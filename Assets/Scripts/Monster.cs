@@ -30,8 +30,12 @@ public class Monster : MonoBehaviour
     private bool isAttacking = false;
 
     private Animator anim;
-    public NavMeshAgent navAgent;   
-    
+    public NavMeshAgent navAgent;
+    public Transform treasureTransform;
+
+    private bool playerInRange = false;
+    private float treasureGuardRange = 30.0f; // Treasure로 돌아갈 범위
+
     void Awake()  // Plz use Awake() instead of Start()
     {
         navAgent = GetComponent<NavMeshAgent>();
@@ -45,13 +49,39 @@ public class Monster : MonoBehaviour
         currentHp = maxHp;
         playerTransform = GameObject.FindWithTag("Player").transform;
         playerBehavior = GameObject.FindWithTag("Player").GetComponent<PlayerBehavior>();  // prefab disconnected inspector scripts
+        treasureTransform = GameObject.FindWithTag("Treasure").transform;
     }
 
     private void Update()
     {
-        navAgent.SetDestination(playerTransform.position);  
-        
-        if (navAgent.velocity.magnitude > 0.1f) // 이동 중일 때
+        float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
+        float distanceToTreasure = Vector3.Distance(transform.position, treasureTransform.position);
+
+        // 플레이어가 공격 범위 안에 있는지 확인
+        if (distanceToPlayer <= attackRange)
+        {
+            playerInRange = true;
+        }
+        else if (distanceToPlayer > treasureGuardRange || distanceToTreasure < attackRange)
+        {
+            playerInRange = false;
+        }
+
+        // 플레이어의 근접성에 따라 목표 결정
+        if (playerInRange && currentState != MonsterStatus.Die && currentState != MonsterStatus.Hit)
+        {
+            target = playerTransform;
+        }
+        else
+        {
+            target = treasureTransform;
+        }
+
+        // 목표물 (플레이어 또는 treasure)을 향해 이동
+        navAgent.SetDestination(target.position);
+
+        // 이동 애니메이션
+        if (navAgent.velocity.magnitude > 0.1f)
         {
             anim.SetBool("isMove", true);
         }
@@ -59,14 +89,11 @@ public class Monster : MonoBehaviour
         {
             anim.SetBool("isMove", false);
         }
-        
-        if (playerTransform && !isAttacking && currentState != MonsterStatus.Die && currentState != MonsterStatus.Hit)
+
+        // 공격 로직
+        if (playerInRange && Time.time >= lastAttackTime + attackCooldown)
         {
-            float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
-            if (distanceToPlayer <= attackRange && Time.time >= lastAttackTime + attackCooldown)
-            {
-                Attack();
-            }
+            Attack();
         }
     }
 
@@ -74,7 +101,6 @@ public class Monster : MonoBehaviour
     {
         isAttacking = true;
         currentState = MonsterStatus.Attack;
-
        
         float randomValue = Random.value; // 0.0f ~ 1.0f 사이의 랜덤한 값을 반환
 
@@ -86,7 +112,6 @@ public class Monster : MonoBehaviour
         {
             anim.SetTrigger("Attack02");
         }
-
 
         lastAttackTime = Time.time;
         StartCoroutine(AttackCooldownRoutine());
@@ -117,6 +142,7 @@ public class Monster : MonoBehaviour
         anim.SetTrigger("Die");
         currentState = MonsterStatus.Die;
         navAgent.enabled = false;
+        GameManager.Instance.UpdateRemainingMonster();
         Destroy(gameObject,4f);
     }
 
