@@ -34404,6 +34404,7 @@ MonoBehaviour:
   - {fileID: 694212450}
   restStageTimerText: {fileID: 860514406}
   shelterPosition: {fileID: 2073936806}
+  coin: {fileID: 3129200342344496425, guid: 3e29573f06c0a7e4fa986fff41de17af, type: 3}
 --- !u!4 &1646977040
 Transform:
   m_ObjectHideFlags: 0

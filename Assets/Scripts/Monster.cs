@@ -151,6 +151,10 @@ public class Monster : MonoBehaviour
         currentState = MonsterStatus.Die;
         navAgent.enabled = false;
         GameManager.Instance.UpdateRemainingMonster();
+        // 코인 생성
+        Instantiate(GameManager.Instance.coin, transform.position, Quaternion.identity);
+
+
         Destroy(gameObject,4f);
     }
 

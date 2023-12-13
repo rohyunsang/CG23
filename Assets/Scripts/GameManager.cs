@@ -24,6 +24,9 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI restStageTimerText;
     public Transform shelterPosition;
 
+    public GameObject coin;
+    public int coinCount = 0;
+
     // 싱글톤 인스턴스
     public static GameManager Instance { get; private set; }
 
