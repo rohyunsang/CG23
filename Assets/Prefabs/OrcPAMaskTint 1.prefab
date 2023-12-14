@@ -168,11 +168,12 @@ MonoBehaviour:
   playerBehavior: {fileID: 0}
   playerTransform: {fileID: 0}
   target: {fileID: 0}
-  maxHp: 100
+  maxHp: 30
   moveSpeed: 3
   attackCooldown: 1.5
   attackDamage: 10
   navAgent: {fileID: 0}
+  treasureTransform: {fileID: 0}
 --- !u!54 &5561321933003061432
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1660,7 +1661,7 @@ GameObject:
   - component: {fileID: 6598060917788423672}
   - component: {fileID: 7116090520802084461}
   - component: {fileID: 1299255194093884282}
-  - component: {fileID: 8489789036091385692}
+  - component: {fileID: 7816761019654042720}
   m_Layer: 0
   m_Name: Maul
   m_TagString: MonsterWeapon
@@ -1754,7 +1755,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.7875247, y: 0.688293, z: 1.79}
   m_Center: {x: -3.50307, y: -0.14903006, z: 0.08787883}
---- !u!114 &8489789036091385692
+--- !u!114 &7816761019654042720
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1766,7 +1767,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de6d36f1792487d4b8eedc8a30bb7a15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackDamage: 10
+  attackDamage: 1
 --- !u!1 &7223840280907111441
 GameObject:
   m_ObjectHideFlags: 0

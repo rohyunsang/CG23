@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -24,7 +25,7 @@ public class Monster : MonoBehaviour
     private float attackRange = 5.0f;  // 이 범위안에 들어오면 공격
     [SerializeField] float attackCooldown = 1.5f;
     private float lastAttackTime = 0f;
-    public int attackDamage = 10;
+    public int attackDamage = 1;
 
     private MonsterStatus currentState = MonsterStatus.Idle;
     private bool isAttacking = false;
@@ -36,7 +37,7 @@ public class Monster : MonoBehaviour
     private bool targetInRange = false;
     private float treasureGuardRange = 30.0f; // Treasure로 돌아갈 범위
     private float treasureAttackRange = 5.0f; // Treasure 공격 범위
-
+    bool isDie = false;
     void Awake()  // Plz use Awake() instead of Start()
     {
         navAgent = GetComponent<NavMeshAgent>();
@@ -55,6 +56,7 @@ public class Monster : MonoBehaviour
 
     private void Update()
     {
+        if (isDie) return;
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
         float distanceToTreasure = Vector3.Distance(transform.position, treasureTransform.position);
 
@@ -107,6 +109,7 @@ public class Monster : MonoBehaviour
 
     private void Attack()
     {
+        if (isDie) return;
         isAttacking = true;
         currentState = MonsterStatus.Attack;
        
@@ -137,7 +140,7 @@ public class Monster : MonoBehaviour
             currentHp -= playerBehavior.attackDamage;
             Debug.Log(currentHp);
             currentState = MonsterStatus.Hit;
-            if(currentHp <= 0 && currentState != MonsterStatus.Die){// prevent times Die
+            if(currentHp <= 0 && !isDie){// prevent times Die
                 MonsterDie(); 
                 return;
             
@@ -147,15 +150,14 @@ public class Monster : MonoBehaviour
     }
 
     private void MonsterDie(){
-        anim.SetTrigger("Die");
-        currentState = MonsterStatus.Die;
+        navAgent.isStopped = true;
         navAgent.enabled = false;
+        anim.SetTrigger("Die");
+        isDie = true;
         GameManager.Instance.UpdateRemainingMonster();
         // 코인 생성
-        Instantiate(GameManager.Instance.coin, transform.position, Quaternion.identity);
-
+        Instantiate(GameManager.Instance.coin, transform.position + new Vector3(0,3f,0), Quaternion.identity);
 
         Destroy(gameObject,4f);
     }
-
 }

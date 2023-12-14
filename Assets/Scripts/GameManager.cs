@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using OpenAI;
 
 public class GameManager : MonoBehaviour
 {
     public GameObject UIScreen;
     public GameObject ChatScreen;
+    public GameObject GameOverScreen;
     public GameObject monsterSpwanManagerObj;
     public bool firstInvade = true;
 
@@ -26,6 +28,12 @@ public class GameManager : MonoBehaviour
 
     public GameObject coin;
     public int coinCount = 0;
+
+    public List<string> diarys = new List<string>();
+    private int diaryIndex = 0;
+    public Text diaryText;
+
+    public GameObject chatGPTManager;
 
     // 싱글톤 인스턴스
     public static GameManager Instance { get; private set; }
@@ -107,6 +115,9 @@ public class GameManager : MonoBehaviour
 
     public void EnterRestStage()
     {
+        chatGPTManager.GetComponent<ChatGPT>().SaveToDiary();
+        
+        
         foreach (GameObject npc in npcs)
         {
             npc.GetComponent<NPC>().GoToOriginalPosition();
@@ -124,11 +135,44 @@ public class GameManager : MonoBehaviour
         }
         EnterStage(); // 예를 들어 EnterStage 메서드 호출
     }
+    public void InitDiary()
+    {
+        diaryText.text = diarys[diaryIndex];
+    }
 
     public void GameOver()
     {
-        // 게임 종료 로직
-        // 예: 게임 오버 화면 표시, 재시작 또는 메뉴로 돌아가는 등의 기능
-        Debug.Log("Game Over! Treasure has been destroyed.");
+        GameOverScreen.SetActive(true);
     }
+    public void ReloadScene() // using btn in GameOverScreen
+    {
+        SceneManager.LoadScene("Main");
+    }
+    public void OnclickLeftButton() // using btn
+    {
+        // 인덱스 감소
+        if (diaryIndex > 0)
+        {
+            diaryIndex--;
+            UpdateDiaryText();
+        }
+    }
+    public void OnclickRightButton() // using btn
+    {
+        // 인덱스 증가
+        if (diaryIndex < diarys.Count - 1)
+        {
+            diaryIndex++;
+            UpdateDiaryText();
+        }
+    }
+
+    private void UpdateDiaryText()
+    {
+        if (diaryText != null && diarys.Count > diaryIndex)
+        {
+            diaryText.text = diarys[diaryIndex];
+        }
+    }
+
 }

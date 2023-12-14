@@ -27,7 +27,7 @@ public class PlayerBehavior : MonoBehaviour
     public int maxHp = 100;
     public int currentHp;
 
-
+    public GameObject diaryObj;
 
     private void Start()
     {
@@ -42,6 +42,10 @@ public class PlayerBehavior : MonoBehaviour
     {
         MovePlayer();
         Attack();
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            diaryObj.SetActive(!diaryObj.activeSelf);
+        }
     }
 
     private void MovePlayer()
@@ -109,7 +113,7 @@ public class PlayerBehavior : MonoBehaviour
 
             if (randomSwing == 0)
             {
-                anim.SetTrigger("Sting");
+                anim.SetTrigger("Circle_Slash");
             }
             else
             {
@@ -136,7 +140,10 @@ public class PlayerBehavior : MonoBehaviour
             hpFillAmount = (float)currentHp / (float)maxHp;     // HP Bar
             slider.value = hpFillAmount;
 
-            if(currentHp<=0)    PlayerDie();
+            if (currentHp <= 0) { 
+                PlayerDie();
+                GameManager.Instance.GameOver();
+            }
         }
     }    
 

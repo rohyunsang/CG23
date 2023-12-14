@@ -4,7 +4,7 @@ using UnityEngine;
 public class StageData : MonoBehaviour {
     public int stageLevel = 0;
     public GameObject orcPrefab;  
-    public GameObject skeletonPrefab;
+    public GameObject blackKnightPrefab;
 
     public Transform[] spawnPoints; // Assign these in the Unity Editor
 
@@ -24,13 +24,13 @@ public class StageData : MonoBehaviour {
 
         #region Stage 2
         numberOfSpawnPoints = Random.Range(0, 3);
-        stage2Monsters.Add(new MonsterSpawnInfo(skeletonPrefab, 10, spawnPoints[numberOfSpawnPoints]));
+        stage2Monsters.Add(new MonsterSpawnInfo(blackKnightPrefab, 10, spawnPoints[numberOfSpawnPoints]));
         #endregion
 
         #region Stage 3
         numberOfSpawnPoints = Random.Range(0, 3);
         stage3Monsters.Add(new MonsterSpawnInfo(orcPrefab, 10, spawnPoints[numberOfSpawnPoints]));
-        stage3Monsters.Add(new MonsterSpawnInfo(skeletonPrefab, 10, spawnPoints[numberOfSpawnPoints]));
+        stage3Monsters.Add(new MonsterSpawnInfo(blackKnightPrefab, 10, spawnPoints[numberOfSpawnPoints]));
         #endregion
     }
 

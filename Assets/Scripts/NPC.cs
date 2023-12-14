@@ -6,7 +6,6 @@ using UnityEngine.AI;
 
 public class NPC : MonoBehaviour
 {
-    public GameObject gptManager;
     public string characterConcept = "";
     public NavMeshAgent navAgent;
     
@@ -52,7 +51,7 @@ public class NPC : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.C))
         {
-            gptManager.GetComponent<ChatGPT>().characterConcept = characterConcept;
+            ChatGPT.Instance.SetCharacterConcept(GetComponent<NPCConcept>().characterConcept);
             GameManager.Instance.OnChatScreen();
             GameManager.Instance.GamePause();
             GameManager.Instance.FirstInvasion();

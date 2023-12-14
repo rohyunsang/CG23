@@ -4,6 +4,19 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
+    Rigidbody rb;
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+    private void Update()
+    {
+        // Calculate the rotation amount
+        float rotationAmount = 60 * Time.deltaTime;
+
+        // Rotate around the y-axis
+        transform.Rotate(0, rotationAmount, 0);
+    }
     private void OnTriggerEnter(Collider other)
     {
         // 충돌한 객체의 태그가 "Player"인지 확인
